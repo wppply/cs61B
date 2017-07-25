@@ -28,6 +28,18 @@ class OpenCommercial {
     inputLine = keyboard.readLine();
 
     /* Replace this comment with your solution.  */
+    URL a = new URL("http://www." + inputLine + ".com");
+    InputStream ins = a.openStream();
+    InputStreamReader inr = new InputStreamReader(ins);
+    BufferedReader site = new BufferedReader(inr);
+    
+    String[] linearray = new String[5];
+    for(int i=0;i<=4; i++){
+      linearray[i] = site.readLine();
+    }
+    for(int i=4;i>=0;i--){
+      System.out.println(linearray[i]);
+    }
 
   }
 }
