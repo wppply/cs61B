@@ -51,6 +51,10 @@ public class DList {
    *  DList() constructor for an empty DList.
    */
   public DList() {
+  	head = newNode(null, head, head);
+  	head.prev = head;
+  	head.next = head;
+  	size = 0;
     //  Your solution here.
   }
 
@@ -78,6 +82,9 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public void insertFront(Object item) {
+  	head.next.prev= newNode(item,head,head.next);
+  	head.next = head.next.prev;
+  	size++;
     // Your solution here.
   }
 
@@ -88,6 +95,9 @@ public class DList {
    */
   public void insertBack(Object item) {
     // Your solution here.
+    head.prev.next = newNode(item,head.prev,head);
+    head.prev = head.prev.next;
+    size++;
   }
 
   /**
@@ -101,6 +111,13 @@ public class DList {
    */
   public DListNode front() {
     // Your solution here.
+    if (isEmpty()){
+    	return null;
+    }
+    else{
+    	return head.next;
+    }
+
   }
 
   /**
@@ -113,6 +130,12 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public DListNode back() {
+  	if(isEmpty()){
+  		return null;
+  	}
+  	else{
+  		return head.prev;
+  	}
     // Your solution here.
   }
 
@@ -127,6 +150,12 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public DListNode next(DListNode node) {
+  	if(node==null || node.next == head){
+  		return null;
+  	}
+  	else{
+  		return node.next;
+  	}
     // Your solution here.
   }
 
@@ -141,7 +170,12 @@ public class DList {
    *  Performance:  runs in O(1) time.
    */
   public DListNode prev(DListNode node) {
-    // Your solution here.
+    if(node==null||node.prev == head){
+  		return null;
+  	}
+  	else{
+  		return node.prev;
+  	}// Your solution here.
   }
 
   /**
@@ -153,6 +187,11 @@ public class DList {
    */
   public void insertAfter(Object item, DListNode node) {
     // Your solution here.
+    if (node!=null){
+    	node.next.prev = newNode(item, node,node.next);
+    	node.next = node.next.prev;
+    	size++;
+    }
   }
 
   /**
@@ -164,6 +203,11 @@ public class DList {
    */
   public void insertBefore(Object item, DListNode node) {
     // Your solution here.
+    if (node!=null){
+    	node.prev.next = newNode(item, node.prev,node);
+    	node.prev = node.prev.next;
+    	size++;
+	}
   }
 
   /**
@@ -172,6 +216,11 @@ public class DList {
    */
   public void remove(DListNode node) {
     // Your solution here.
+    if (node!=null){
+    	node.prev.next = node.next;
+    	node.next.prev = node.prev;
+    	size--;
+	}
   }
 
   /**
@@ -190,5 +239,78 @@ public class DList {
       current = current.next;
     }
     return result + "]";
+  }
+
+    public static void main(String[] argv) {
+	System.out.println("Testing Constructor");
+	DList testList = new DList();
+	System.out.println("Is empty? Should be true: " + testList.isEmpty());
+	System.out.println("Should be zero length: " + testList.length());
+	System.out.println("Should be [  ]: " + testList);
+
+	System.out.println("\nTesting insertFront");
+	testList.insertFront(1);
+	System.out.println("Is empty? Should be false: " + testList.isEmpty());
+	System.out.println("Should be one length: " + testList.length());
+	System.out.println("Should be [ 1 ]: " + testList);
+
+	System.out.println("\nTesting insertBack");
+	testList.insertBack(3);
+	System.out.println("Is empty? Should be false: " + testList.isEmpty());
+	System.out.println("Should be two length: " + testList.length());
+	System.out.println("Should be [ 1 3 ]: " + testList);
+
+	System.out.println("\nTesting front()");
+	System.out.println("This should print out 1: " + testList.front().item);
+
+	System.out.println("\nTesting back()");
+	System.out.println("This should print out 3: " + testList.back().item);
+
+	System.out.println("\nTesting next method");
+	testList.insertFront(5);
+	System.out.println("Should be [ 5 1 3 ]: " + testList);
+	DListNode testingNode = testList.next(testList.front());
+	System.out.println("This should print out 1: " + testingNode.item);
+	testingNode = testList.next(testingNode);
+	System.out.println("This should print out 3: " + testingNode.item);
+
+	System.out.println("\nTesting prev method");
+	testingNode = testList.prev(testingNode);
+	System.out.println("This should print out 1: " + testingNode.item);
+
+	System.out.println("\nTesting insertBefore");
+	testList.insertBefore(10, testingNode);
+	System.out.println("Should print out [ 5 10 1 3 ]: " + testList);
+
+	System.out.println("\nTesting insertAfter");
+	testList.insertAfter(40, testingNode);
+	System.out.println("Should be [ 5 10 1 40 3 ]: " + testList);
+
+	System.out.println("\nRemoving node");
+	testList.remove(testingNode);
+	System.out.println("Should be [ 5 10 40 3 ]: " + testList);
+	System.out.println(testList.length());
+
+        DList l = new DList();
+		System.out.println("\n\n###Testing insertFront ###\nEmpty list is" + l);
+		l.insertFront(9);
+		System.out.println("\nInserting 9 at front. \nList with 9 is " + l);
+		l.insertFront(8);
+		l.insertFront(7);
+		System.out.println("\nInserting 7, 8 at the front. \nList with 7, 8, 9 is " + l);
+		l.insertAfter(6, l.head);
+		System.out.println("\nInserting 6 after head. nList with 6, 7, 8, 9 is "+l);
+		l.remove(l.head.next);
+		System.out.println("\nRemoved head.next, should return a list of 7, 8, 9. nList with 7, 8, 9 is " + l);
+        /*
+		LockDList m = new LockDList();
+		m.insertFront(9);
+		m.insertFront(8);
+		m.insertFront(7);
+		System.out.println("\nInserting 7, 8, 9 at the front. List with 7, 8, 9 is " + m);
+		m.lockNode(m.head.next);
+		m.remove(m.head.next);
+		System.out.println("Locked the first element of the DList, should not be removed. List with 7, 8, 9 is " + m);
+        */
   }
 }
