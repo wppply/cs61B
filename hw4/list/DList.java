@@ -51,7 +51,7 @@ public class DList {
    *  DList() constructor for an empty DList.
    */
   public DList() {
-  	head = newNode(null, head, head);
+  	head = newNode(null, null, null);
   	head.prev = head;
   	head.next = head;
   	size = 0;

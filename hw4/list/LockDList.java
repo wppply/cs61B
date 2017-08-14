@@ -7,8 +7,8 @@ class LockDList extends DList{
 	//constructor
 
 
-	public void lockNode(DlistNode node){
-		((LockDListNode)node).islocked = true;
+	public void lockNode(DListNode node){
+		((LockDListNode)node).isLocked = true;
 
 	}
 
