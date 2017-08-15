@@ -8,6 +8,7 @@ import list.*;
  **/
 public class Set {
   /* Fill in the data fields here. */
+  List elements;
 
   /**
    * Set ADT invariants:
@@ -24,6 +25,7 @@ public class Set {
    **/
   public Set() { 
     // Your solution here.
+    elements = new DList();
   }
 
   /**
@@ -33,7 +35,7 @@ public class Set {
    **/
   public int cardinality() {
     // Replace the following line with your solution.
-    return 0;
+    return elements.length();
   }
 
   /**
@@ -44,8 +46,31 @@ public class Set {
    *
    *  Performance:  runs in O(this.cardinality()) time.
    **/
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void insert(Comparable c) {
     // Your solution here.
+    if (cardinality() == 0){
+      elements.insertFront(c);
+    }
+    else{
+      ListNode cur = elements.front();
+      try{      
+        
+        while (c.compareTo((Comparable)cur.item()) > 0 && cur!=elements.back()){
+          cur = cur.next();
+        }
+        if (c.compareTo((Comparable)cur.item()) < 0) {
+          cur.insertBefore(c);
+        } 
+        else if (c.compareTo((Comparable)cur.item()) > 0) {
+          cur.insertAfter(c);
+        }
+      }
+      catch (InvalidNodeException ine) {
+        System.err.println("insert() failed.");
+        ine.printStackTrace(System.err);
+        }
+    }
   }
 
   /**
@@ -65,6 +90,18 @@ public class Set {
    **/
   public void union(Set s) {
     // Your solution here.
+    ListNode n = s.elements.front();
+    try{
+      while (n.isValidNode()){
+        this.insert((Comparable)n.item());
+        n = n.next();
+      }
+    }
+    catch (InvalidNodeException ine) {
+      System.err.println("union() failed.");
+      ine.printStackTrace(System.err);
+    }
+
   }
 
   /**
@@ -82,6 +119,7 @@ public class Set {
    **/
   public void intersect(Set s) {
     // Your solution here.
+
   }
 
   /**
@@ -100,11 +138,22 @@ public class Set {
    *            DEVIATIONS WILL LOSE POINTS.
    **/
   public String toString() {
-    // Replace the following line with your solution.
-    return "";
+    String s = "{  ";
+    ListNode cur = elements.front();
+    try {
+      while (cur.isValidNode()) {
+        s += cur.item() + "  ";
+        cur = cur.next();
+      }
+    } catch (InvalidNodeException ine) {
+      System.err.println("toString() failed.");
+      ine.printStackTrace(System.err);
+    } 
+    return s + "}";
   }
 
   public static void main(String[] argv) {
+    
     Set s = new Set();
     s.insert(new Integer(3));
     s.insert(new Integer(4));
@@ -119,7 +168,7 @@ public class Set {
 
     Set s3 = new Set();
     s3.insert(new Integer(5));
-    s3.insert(new Integer(3));
+    s3.insert(new Integer(5));
     s3.insert(new Integer(8));
     System.out.println("Set s3 = " + s3);
 
@@ -131,5 +180,6 @@ public class Set {
 
     System.out.println("s.cardinality() = " + s.cardinality());
     // You may want to add more (ungraded) test code here.
+
   }
 }
