@@ -1,6 +1,7 @@
 /* HashTableChained.java */
 
 package dict;
+import list.*;
 
 /**
  *  HashTableChained implements a Dictionary as a hash table with chaining.
@@ -19,6 +20,10 @@ public class HashTableChained implements Dictionary {
   /**
    *  Place any data fields here.
    **/
+  public int hashsize ;
+  protected int entryNumber =0;
+  protected int collision =0;
+  protected SList[] hashlist;
 
 
 
@@ -30,8 +35,22 @@ public class HashTableChained implements Dictionary {
 
   public HashTableChained(int sizeEstimate) {
     // Your solution here.
+    while (!isPrime(sizeEstimate)){
+      sizeEstimate++;
+    }
+    hashlist = new SList[sizeEstimate];
+    hashsize = sizeEstimate;
+
   }
 
+  public boolean isPrime(int n){
+    for(int i = 2; i<n ;i++){
+      if (n%i == 0){
+        return false;
+      }
+    }
+    return true;
+  }
   /** 
    *  Construct a new empty hash table with a default size.  Say, a prime in
    *  the neighborhood of 100.
@@ -39,6 +58,9 @@ public class HashTableChained implements Dictionary {
 
   public HashTableChained() {
     // Your solution here.
+    hashsize = 101;
+    hashlist = new SList[hashsize];
+    
   }
 
   /**
@@ -50,8 +72,15 @@ public class HashTableChained implements Dictionary {
    **/
 
   int compFunction(int code) {
-    // Replace the following line with your solution.
-    return 88;
+    int a=3;
+    int b=5;
+    int p=131;
+    int compressed_value = ((a * code + b) % p) % hashlist.length;
+
+    if (compressed_value < 0) {
+      compressed_value = compressed_value + hashlist.length;
+    }
+    return compressed_value;
   }
 
   /** 
@@ -63,7 +92,7 @@ public class HashTableChained implements Dictionary {
 
   public int size() {
     // Replace the following line with your solution.
-    return 0;
+    return entryNumber;
   }
 
   /** 
@@ -74,7 +103,7 @@ public class HashTableChained implements Dictionary {
 
   public boolean isEmpty() {
     // Replace the following line with your solution.
-    return true;
+    return entryNumber==0;
   }
 
   /**
@@ -92,7 +121,21 @@ public class HashTableChained implements Dictionary {
 
   public Entry insert(Object key, Object value) {
     // Replace the following line with your solution.
-    return null;
+    Entry item = new Entry();
+    item.key = key;
+    item.value = value;
+
+    int compressed_value = compFunction(item.key.hashCode());
+    if (hashlist[compressed_value]==null){
+      hashlist[compressed_value] = new SList();
+      hashlist[compressed_value].insertFront(item);
+    }else{
+      hashlist[compressed_value].insertFront(item);
+      collision++;
+    }
+    entryNumber++;
+
+    return item;
   }
 
   /** 
@@ -109,6 +152,19 @@ public class HashTableChained implements Dictionary {
 
   public Entry find(Object key) {
     // Replace the following line with your solution.
+    int compressed_value = compFunction(key.hashCode());
+    SList hash = hashlist[compressed_value];
+    try{
+      ListNode cur = hash.front();
+      while (cur.isValidNode()){
+        if(((Entry)cur.item()).key().equals(key)){
+          return ((Entry)cur.item());
+        }
+        cur = cur.next();
+      }
+    } catch(InvalidNodeException e){
+      System.out.println(e);
+    }
     return null;
   }
 
@@ -127,6 +183,24 @@ public class HashTableChained implements Dictionary {
 
   public Entry remove(Object key) {
     // Replace the following line with your solution.
+    SList hash = hashlist[compFunction(key.hashCode())];
+    ListNode cur = hash.front();
+    try{
+
+         while (cur.isValidNode()){
+          if (((Entry) cur.item()).key().equals(key)) {
+            Entry entry = (Entry) cur.item();
+            cur.remove();
+            entryNumber--;
+            return entry;
+          } else {
+            cur = cur.next();
+          }
+        }
+    }catch(InvalidNodeException e){
+      System.out.println(e);
+    }
+
     return null;
   }
 
@@ -135,6 +209,7 @@ public class HashTableChained implements Dictionary {
    */
   public void makeEmpty() {
     // Your solution here.
+    hashlist = new SList[hashlist.length];
   }
 
 }
