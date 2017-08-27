@@ -15,7 +15,18 @@ public class ListSorts {
    **/
   public static LinkedQueue makeQueueOfQueues(LinkedQueue q) {
     // Replace the following line with your solution.
-    return null;
+    LinkedQueue resultQueue = new LinkedQueue();
+
+    while (!q.isEmpty()){
+      try{
+        LinkedQueue newNode = new LinkedQueue();
+        newNode.enqueue(q.dequeue());
+        resultQueue.enqueue(newNode);
+      }catch(QueueEmptyException e){
+        System.err.println("Error:  attempt to dequeue from empty queue.");
+      }
+    }
+    return resultQueue;
   }
 
   /**
@@ -29,9 +40,30 @@ public class ListSorts {
    *  @return a LinkedQueue containing all the Comparable objects from q1 
    *   and q2 (and nothing else), sorted from smallest to largest.
    **/
-  public static LinkedQueue mergeSortedQueues(LinkedQueue q1, LinkedQueue q2) {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static LinkedQueue mergeSortedQueues(LinkedQueue q1, LinkedQueue q2) {
     // Replace the following line with your solution.
-    return null;
+    LinkedQueue mergedQueue = new LinkedQueue();
+    while(!(q1.isEmpty()&&q2.isEmpty())){
+      try{
+        Comparable item1 = (Comparable) q1.front();
+        Comparable item2 = (Comparable) q2.front();
+        if(q1.isEmpty()){
+          mergedQueue.append(q2);
+        }else if(q2.isEmpty()){
+          mergedQueue.append(q1);
+        }else{
+          if( item1.compareTo(item2) <= 0 ) {
+            mergedQueue.enqueue(q1.dequeue());
+          }else{
+            mergedQueue.enqueue(q2.dequeue());
+          }
+        }
+      }catch(QueueEmptyException e){
+        System.err.println("Error:  attempt to dequeue from empty queue.");
+      }
+    }
+    return mergedQueue;
   }
 
   /**
